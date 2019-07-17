@@ -17,7 +17,7 @@ public class Controller : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pos.z = 0;
+            pos.z = -1;
             Instantiate(Bullet, pos, Quaternion.identity);
         }
     }

@@ -29,7 +29,7 @@ public class TerrainScript : MonoBehaviour
         SpriteRenderer.sprite = Sprite.Create(CloneTerrain,
                                         new Rect(0, 0, CloneTerrain.width, CloneTerrain.height),
                                         new Vector2(0.5f, 0.5f),
-                                        128);
+                                        100);
     }
     private void ExploseBullet(Collider2D bulletCollider)
     {
@@ -57,6 +57,7 @@ public class TerrainScript : MonoBehaviour
     }
     public void MakeAHole(Texture2D bulletShape, Vector2 bulletCenter)
     {
+        print(name);
         Vector2 terrainCenter = transform.position;
         Vector2Int impactPoint = 
             Vector2Int.CeilToInt(new Vector2((bulletCenter.x - terrainCenter.x) * worldVsPixelWidthRatio + CloneTerrain.width / 2,
@@ -76,6 +77,8 @@ public class TerrainScript : MonoBehaviour
         {
             for(int j = 0; j < limRight - limLeft + 1; j++)
             {
+                if (resLeft + j + (resUp + i) * bulletShape.width >= bulletShapePixels.Length)
+                    continue;
                 if (bulletShapePixels[resLeft + j + (resUp + i) * bulletShape.width] == Color.black) 
                     terrainPixels[j + i * (limRight - limLeft + 1)] = Color.clear;
             }

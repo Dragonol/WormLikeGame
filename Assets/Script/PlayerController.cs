@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject Bullet;
+
     public float Speed;
     private Rigidbody2D PlayerRB2D;
     // Start is called before the first frame update
@@ -27,11 +29,18 @@ public class PlayerController : MonoBehaviour
             PlayerRB2D.velocity = new Vector2(-Speed, PlayerRB2D.velocity.y);
         }
 
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
+            bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(450,450));
+        }
+
         if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
             RaiseFriction();
             PlayerRB2D.velocity = new Vector2(0, 0);
         }
+
     }
     void RaiseFriction()
     {

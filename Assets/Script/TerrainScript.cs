@@ -8,6 +8,7 @@ public class TerrainScript : MonoBehaviour
     private SpriteRenderer SpriteRenderer;
     private float worldVsPixelWidthRatio;
     private float worldVsPixelHeightRatio;
+    private int Size;
     // Start is called before the first frame update
     private void Start()
     {

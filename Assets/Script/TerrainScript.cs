@@ -17,6 +17,7 @@ public class TerrainScript : MonoBehaviour
         worldVsPixelWidthRatio = CloneTerrain.width / SpriteRenderer.bounds.size.x;
         worldVsPixelHeightRatio = CloneTerrain.height / SpriteRenderer.bounds.size.y;
         gameObject.AddComponent<PolygonCollider2D>();
+        GetComponent<PolygonCollider2D>().autoTiling = true;
     }
 
     // Update is called once per frame
@@ -55,6 +56,13 @@ public class TerrainScript : MonoBehaviour
             collider.GetComponent<BulletScript>().IsTrigged = true;
         }
     }
+    private bool CheckIfNothing()
+    {
+        foreach (var pixel in CloneTerrain.GetPixels())
+            if (pixel.a != 0)
+                return false;
+        return true;
+    }
     public void MakeAHole(Texture2D bulletShape, Vector2 bulletCenter)
     {
         print(name);
@@ -87,8 +95,10 @@ public class TerrainScript : MonoBehaviour
         CloneTerrain.SetPixels(limLeft, limUp, limRight - limLeft + 1, limDown - limUp + 1, terrainPixels);
         CloneTerrain.Apply();
         UpdateTexture();
+
         Destroy(GetComponent<PolygonCollider2D>());
-        gameObject.AddComponent<PolygonCollider2D>();
+        if (!CheckIfNothing())
+            gameObject.AddComponent<PolygonCollider2D>();
     }
     
 }

@@ -4866,6 +4866,11 @@ PrefabInstance:
       propertyPath: ForcePerSecondSpaceHold
       value: 600
       objectReference: {fileID: 0}
+    - target: {fileID: 4718941965515590545, guid: 8cfd87f6099d95f45b7b273c920caeea,
+        type: 3}
+      propertyPath: AnglePerSecondControlling
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8cfd87f6099d95f45b7b273c920caeea, type: 3}
 --- !u!1001 &6988672311122710467

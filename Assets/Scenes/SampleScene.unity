@@ -4861,6 +4861,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2363513233673579395, guid: 14876dfb6b5bd2a40b726fd6a8487db4,
         type: 3}
+    - target: {fileID: 4718941965515590545, guid: 8cfd87f6099d95f45b7b273c920caeea,
+        type: 3}
+      propertyPath: ForcePerSecondSpaceHold
+      value: 600
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8cfd87f6099d95f45b7b273c920caeea, type: 3}
 --- !u!1001 &6988672311122710467

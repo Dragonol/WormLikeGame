@@ -9,10 +9,15 @@ public class PlayerController : MonoBehaviour
     public float AnglePerSecondControlling;
     public float Speed;
 
+    public GameObject ArmLine;
+    public float DistFromArmLine;
+
     private float Angle;
     private float DeltaTimeBullet;
     private float DeltaTimeAngle;
     private float AngleMul;
+    private float CurrAngle;
+
     private Rigidbody2D PlayerRB2D;
     // Start is called before the first frame update
     void Start()
@@ -37,7 +42,10 @@ public class PlayerController : MonoBehaviour
             LowFriction();
             PlayerRB2D.velocity = new Vector2(-Speed, PlayerRB2D.velocity.y);
         }
-        
+        else if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S))
+        {
+            CurrAngle = Angle;
+        }
 
         if (Input.GetKey(KeyCode.D))
         {
@@ -58,17 +66,33 @@ public class PlayerController : MonoBehaviour
         {
             DeltaTimeAngle += Time.deltaTime;
             Angle += (Time.deltaTime * AnglePerSecondControlling) * AngleMul;
-            AngleMul += 0.03f;
+            AngleMul *= 1.01f;
             print(Angle);
         }
         else if (Input.GetKey(KeyCode.S))
         {
             DeltaTimeAngle += Time.deltaTime;
             Angle -= (Time.deltaTime * AnglePerSecondControlling) * AngleMul;
-            AngleMul += 0.03f;
+            AngleMul *= 1.01f;
             print(Angle);
         }
-        
+        else if (Input.GetKeyUp(KeyCode.W))
+        {
+            Angle = Mathf.RoundToInt(Angle);
+            if (Mathf.Abs(CurrAngle - Angle) < 1)
+                Angle++;
+            DeltaTimeAngle = 0;
+            AngleMul = 1;
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            Angle = Mathf.RoundToInt(Angle);
+            if (Mathf.Abs(CurrAngle - Angle) < 1)
+                Angle--;
+            DeltaTimeAngle = 0;
+            AngleMul = 1;
+        }
+
         if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
             RaiseFriction();
@@ -87,20 +111,13 @@ public class PlayerController : MonoBehaviour
                 DeltaTimeBullet = 0;
             }
         }
-        else if (Input.GetKeyUp(KeyCode.W))
-        {
-            if (DeltaTimeAngle * AnglePerSecondControlling < 1)
-                Angle = Angle - DeltaTimeAngle * AnglePerSecondControlling + 1;
-            DeltaTimeAngle = 0;
-            AngleMul = 1;
-        }
-        else if (Input.GetKeyUp(KeyCode.S))
-        {
-            if (DeltaTimeAngle * AnglePerSecondControlling < 1)
-                Angle = Angle + DeltaTimeAngle * AnglePerSecondControlling - 1;
-            DeltaTimeAngle = 0;
-            AngleMul = 1;
-        }
+
+        ArmLine.transform.position = new Vector3(transform.position.x + Mathf.Cos(Mathf.Deg2Rad * Angle) * DistFromArmLine,
+                                                 transform.position.y + Mathf.Sin(Mathf.Deg2Rad * Angle) * DistFromArmLine,
+                                                 0);
+        var rotationVector = ArmLine.transform.rotation.eulerAngles;
+        rotationVector.z = Angle - 90;
+        ArmLine.transform.rotation = Quaternion.Euler(rotationVector);
     }
 
     private void FixedUpdate()

@@ -5,132 +5,74 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameObject Bullet;
-    public float ForcePerSecondSpaceHold;
-    public float AnglePerSecondControlling;
     public float Speed;
-
-    public GameObject ArmLine;
-    public float DistFromArmLine;
-
-    private float Angle;
-    private float DeltaTimeBullet;
-    private float DeltaTimeAngle;
-    private float AngleMul;
-    private float CurrAngle;
+    public float JumpForce;
+    public bool Grounded;
 
     private Rigidbody2D PlayerRB2D;
-    // Start is called before the first frame update
+    private CircleCollider2D CircleCollider2D;
+
+    
     void Start()
     {
         PlayerRB2D = GetComponent<Rigidbody2D>();
-        Angle = 45;
-        AngleMul = 1;
-        DeltaTimeBullet = 0;
-        RaiseFriction();
+        CircleCollider2D = GetComponent<CircleCollider2D>();
+
+        Grounded = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            LowFriction();
-            PlayerRB2D.velocity = new Vector2(Speed, PlayerRB2D.velocity.y);
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            LowFriction();
-            PlayerRB2D.velocity = new Vector2(-Speed, PlayerRB2D.velocity.y);
-        }
-        else if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S))
-        {
-            CurrAngle = Angle;
-        }
-
+        // Moving horizontal
         if (Input.GetKey(KeyCode.D))
         {
-            LowFriction();
+            UnStop();
             PlayerRB2D.velocity = new Vector2(Speed, PlayerRB2D.velocity.y);
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            LowFriction();
+            UnStop();
             PlayerRB2D.velocity = new Vector2(-Speed, PlayerRB2D.velocity.y);
-        }
-        else if(Input.GetKey(KeyCode.Space))
-        {
-            DeltaTimeBullet += Time.deltaTime;
-            print(DeltaTimeBullet);
-        }
-        else if (Input.GetKey(KeyCode.W))
-        {
-            DeltaTimeAngle += Time.deltaTime;
-            Angle += (Time.deltaTime * AnglePerSecondControlling) * AngleMul;
-            AngleMul *= 1.01f;
-            print(Angle);
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            DeltaTimeAngle += Time.deltaTime;
-            Angle -= (Time.deltaTime * AnglePerSecondControlling) * AngleMul;
-            AngleMul *= 1.01f;
-            print(Angle);
-        }
-        else if (Input.GetKeyUp(KeyCode.W))
-        {
-            Angle = Mathf.RoundToInt(Angle);
-            if (Mathf.Abs(CurrAngle - Angle) < 1)
-                Angle++;
-            DeltaTimeAngle = 0;
-            AngleMul = 1;
-        }
-        else if (Input.GetKeyUp(KeyCode.S))
-        {
-            Angle = Mathf.RoundToInt(Angle);
-            if (Mathf.Abs(CurrAngle - Angle) < 1)
-                Angle--;
-            DeltaTimeAngle = 0;
-            AngleMul = 1;
         }
 
         if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
-            RaiseFriction();
-            PlayerRB2D.velocity = new Vector2(0, 0);
+            Stop();
+            PlayerRB2D.velocity = new Vector2(0, PlayerRB2D.velocity.y);
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            if (DeltaTimeBullet != 0)
-            {
-                GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
-                float force = DeltaTimeBullet * ForcePerSecondSpaceHold;
-                float angleInRadian = Mathf.Deg2Rad * Angle;
-                bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(force * Mathf.Cos(angleInRadian),
-                                                                        force * Mathf.Sin(angleInRadian)));
-                DeltaTimeBullet = 0;
-            }
-        }
-
-        ArmLine.transform.position = new Vector3(transform.position.x + Mathf.Cos(Mathf.Deg2Rad * Angle) * DistFromArmLine,
-                                                 transform.position.y + Mathf.Sin(Mathf.Deg2Rad * Angle) * DistFromArmLine,
-                                                 0);
-        var rotationVector = ArmLine.transform.rotation.eulerAngles;
-        rotationVector.z = Angle - 90;
-        ArmLine.transform.rotation = Quaternion.Euler(rotationVector);
     }
 
     private void FixedUpdate()
     {
-
+        UpdateGrounded();
+        if (Input.GetKey(KeyCode.W) && Grounded)
+        {
+            PlayerRB2D.AddForce(new Vector2(0, JumpForce));
+        }
     }
-    void RaiseFriction()
+    
+    private void Stop()
     {
-        PlayerRB2D.constraints = RigidbodyConstraints2D.FreezePositionX;
+        PlayerRB2D.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
-    void LowFriction()
+    private void UnStop()
     {
-        PlayerRB2D.constraints = RigidbodyConstraints2D.None;
+        PlayerRB2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+    }
+    private void UpdateGrounded()
+    {
+        LayerMask layer = LayerMask.GetMask("Terrain");
+        //var currPos = CircleCollider2D.bounds.center;
+        //var colliderRadius = CircleCollider2D.radius;
+        //float dist = 0.01f;
+        //var ray1 = Physics2D.Raycast(currPos, new Vector2(0, -1), colliderRadius + dist, layer).collider;
+        //var ray2 = Physics2D.Raycast(new Vector2(currPos.x - (colliderRadius/2), currPos.y), new Vector2(0, -1), Mathf.Sqrt(3) * colliderRadius/2 + dist, layer).collider;
+        //var ray3 = Physics2D.Raycast(new Vector2(currPos.x + (colliderRadius/2), currPos.y), new Vector2(0, -1), Mathf.Sqrt(3) * colliderRadius / 2 + dist, layer).collider;
 
+        //Grounded = ray1 || ray2 || ray3;
+
+        if ((Grounded = CircleCollider2D.IsTouchingLayers(layer)))
+            PlayerRB2D.velocity = new Vector2(PlayerRB2D.velocity.x, 0);
     }
 }

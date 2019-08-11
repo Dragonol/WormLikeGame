@@ -37,7 +37,7 @@ public class TerrainScript : MonoBehaviour
     {
         Vector2 bulletCenter = bulletCollider.bounds.center;
         Texture2D bulletShape = bulletCollider.GetComponent<BulletScript>().BulletShape;
-        float bulletRadius = bulletCollider.GetComponent<BulletScript>().Radius;
+        float bulletRadius = bulletCollider.GetComponent<BulletScript>().BlastRadius;
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(bulletCenter, bulletRadius);
 
         print(hitColliders.Length);
@@ -50,11 +50,11 @@ public class TerrainScript : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (!collider.GetComponent<BulletScript>().IsTrigged)
+        if (!collider.GetComponent<BulletScript>().IsHitted)
         {
             ExploseBullet(collider);
             Destroy(collider.gameObject);
-            collider.GetComponent<BulletScript>().IsTrigged = true;
+            collider.GetComponent<BulletScript>().IsHitted = true;
         }
     }
     private bool CheckIfNothing()

@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameObject Bullet;
-    public float Speed;
+    public int HealthPoint;
+    public float HorizontalSpeed;
     public float JumpForce;
-    public bool Grounded;
+    public bool IsGrounded;
+    public bool IsJumpable;
 
     private Rigidbody2D PlayerRB2D;
     private CircleCollider2D CircleCollider2D;
@@ -21,24 +23,25 @@ public class PlayerController : MonoBehaviour
 
         TerrainLayer = LayerMask.GetMask("Terrain");
 
-        Grounded = false;
+        IsGrounded = false;
+        IsJumpable = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateGrounded();
+        UpdateValues();
 
         // Moving horizontal
         if (Input.GetKey(KeyCode.D))
         {
             UnStop();
-            PlayerRB2D.velocity = new Vector2(Speed, PlayerRB2D.velocity.y);
+            PlayerRB2D.velocity = new Vector2(HorizontalSpeed, PlayerRB2D.velocity.y);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             UnStop();
-            PlayerRB2D.velocity = new Vector2(-Speed, PlayerRB2D.velocity.y);
+            PlayerRB2D.velocity = new Vector2(-HorizontalSpeed, PlayerRB2D.velocity.y);
         }
 
         if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
@@ -47,11 +50,23 @@ public class PlayerController : MonoBehaviour
             PlayerRB2D.velocity = new Vector2(0, PlayerRB2D.velocity.y);
         }
 
+        
         // Moving vertical
-        if (Input.GetKey(KeyCode.W) && Grounded)
+        if (Input.GetKey(KeyCode.W) && IsGrounded && IsJumpable)
         {
+            PlayerRB2D.velocity = new Vector2(PlayerRB2D.velocity.x, 0);
+            IsJumpable = false;
             PlayerRB2D.AddForce(new Vector2(0, JumpForce));
         }
+
+        // Shooting
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = mousePosition - transform.position;
+            Shoot(transform.position, direction, 10, 10);
+        }    
+            
     }
 
     private void FixedUpdate()
@@ -67,12 +82,18 @@ public class PlayerController : MonoBehaviour
     {
         PlayerRB2D.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
-    private void UpdateGrounded()
+    private void UpdateValues()
     {
-        Grounded = CircleCollider2D.IsTouchingLayers(TerrainLayer);
+        IsGrounded = CircleCollider2D.IsTouchingLayers(TerrainLayer);
 
-        // Set velocity to zero when touch ground
-        if (Grounded)
-            PlayerRB2D.velocity = new Vector2(PlayerRB2D.velocity.x, 0);
+        if (!IsGrounded)
+            IsJumpable = true;
+    }
+    private void Shoot(Vector2 origin, Vector2 direction, float blastRadius, float speed)
+    {
+        BulletScript bullet = Instantiate(Bullet, origin, Quaternion.identity).GetComponent<BulletScript>();
+        bullet.Direction = direction;
+        bullet.Speed = speed;
+        bullet.BlastRadius = blastRadius;
     }
 }

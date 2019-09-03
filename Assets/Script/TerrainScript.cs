@@ -1,15 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Collections;
 
 public class TerrainScript : MonoBehaviour
 {
     private Texture2D CloneTerrain;
     private SpriteRenderer SpriteRenderer;
+    private PolygonCollider2D PolygonCollider2D;
     private float worldVsPixelWidthRatio;
     private float worldVsPixelHeightRatio;
     private int Size;
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+    }
     private void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -17,11 +24,11 @@ public class TerrainScript : MonoBehaviour
 
         worldVsPixelWidthRatio = CloneTerrain.width / SpriteRenderer.bounds.size.x;
         worldVsPixelHeightRatio = CloneTerrain.height / SpriteRenderer.bounds.size.y;
-        gameObject.AddComponent<PolygonCollider2D>();
+
+        PolygonCollider2D = gameObject.AddComponent<PolygonCollider2D>();
         GetComponent<PolygonCollider2D>().autoTiling = true;
     }
 
-    // Update is called once per frame
     private void Update()
     {
         
@@ -31,32 +38,9 @@ public class TerrainScript : MonoBehaviour
         SpriteRenderer.sprite = Sprite.Create(CloneTerrain,
                                         new Rect(0, 0, CloneTerrain.width, CloneTerrain.height),
                                         new Vector2(0.5f, 0.5f),
-                                        100);
+                                        worldVsPixelWidthRatio);
     }
-    private void ExploseBullet(Collider2D bulletCollider)
-    {
-        Vector2 bulletCenter = bulletCollider.bounds.center;
-        Texture2D bulletShape = bulletCollider.GetComponent<BulletScript>().BulletShape;
-        float bulletRadius = bulletCollider.GetComponent<BulletScript>().BlastRadius;
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(bulletCenter, bulletRadius);
-
-        print(hitColliders.Length);
-        foreach (Collider2D hitCollider in hitColliders)
-        {
-            if (hitCollider.tag != "Terrain")
-                continue;
-            hitCollider.GetComponent<TerrainScript>().MakeAHole(bulletShape, bulletCenter);
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (!collider.GetComponent<BulletScript>().IsHitted)
-        {
-            ExploseBullet(collider);
-            Destroy(collider.gameObject);
-            collider.GetComponent<BulletScript>().IsHitted = true;
-        }
-    }
+    
     private bool CheckIfNothing()
     {
         foreach (var pixel in CloneTerrain.GetPixels())
@@ -64,42 +48,44 @@ public class TerrainScript : MonoBehaviour
                 return false;
         return true;
     }
-    public void MakeAHole(Texture2D bulletShape, Vector2 bulletCenter)
+    public void MakeAHole(float blastRadius, Vector2 bulletCenter)
     {
-        print(name);
-        Vector2 terrainCenter = transform.position;
-        Vector2Int impactPoint = 
-            Vector2Int.CeilToInt(new Vector2((bulletCenter.x - terrainCenter.x) * worldVsPixelWidthRatio + CloneTerrain.width / 2,
-                                             (bulletCenter.y - terrainCenter.y) * worldVsPixelHeightRatio + CloneTerrain.height / 2));
-
-        int limLeft = Mathf.Max(0, impactPoint.x - bulletShape.width / 2 - 1);
-        int limUp = Mathf.Max(0, impactPoint.y - bulletShape.height / 2 - 1);
-        int limRight = Mathf.Min(impactPoint.x + bulletShape.width / 2 - 1, CloneTerrain.width - 1);
-        int limDown = Mathf.Min(impactPoint.y + bulletShape.height / 2 - 1, CloneTerrain.height - 1);
-        int resLeft = limLeft - (impactPoint.x - bulletShape.width / 2 - 1);
-        int resUp = limUp - (impactPoint.y - bulletShape.height / 2 - 1);
-
-        var bulletShapePixels = bulletShape.GetPixels();
-        var terrainPixels = CloneTerrain.GetPixels(limLeft, limUp, limRight - limLeft + 1, limDown - limUp + 1);
-
-        for (int i = 0; i < limDown - limUp + 1; i++) 
+        bool setPixel(NativeArray<Color32> array, int width, int x, int y, Color32 value)
         {
-            for(int j = 0; j < limRight - limLeft + 1; j++)
+            int index = y * width + x;
+            if (x < 0 || y < 0 || x >= width || index >= array.Length)
+                return false;
+            array[index] = value;
+            return true;
+        }
+
+        int roundblastRadius = (int)(blastRadius * worldVsPixelWidthRatio);
+        Vector2 terrainCenter = transform.position;
+        Vector2Int impactPoint = Vector2Int.CeilToInt(
+            new Vector2((bulletCenter.x - terrainCenter.x) * worldVsPixelWidthRatio + CloneTerrain.width / 2,
+                        (bulletCenter.y - terrainCenter.y) * worldVsPixelHeightRatio + CloneTerrain.height / 2));
+
+        var terrainPixels = CloneTerrain.GetRawTextureData<Color32>();
+
+        for(int i = 1 - roundblastRadius; i < roundblastRadius; i++)
+        {
+            setPixel(terrainPixels, CloneTerrain.width, impactPoint.x, impactPoint.y + i, Color.clear);
+            int range = (int)Mathf.Sqrt(roundblastRadius * roundblastRadius - i * i);
+            for(int j = 1; j < range; j++)
             {
-                if (resLeft + j + (resUp + i) * bulletShape.width >= bulletShapePixels.Length)
-                    continue;
-                if (bulletShapePixels[resLeft + j + (resUp + i) * bulletShape.width] == Color.black) 
-                    terrainPixels[j + i * (limRight - limLeft + 1)] = Color.clear;
+                setPixel(terrainPixels, CloneTerrain.width, impactPoint.x + j, impactPoint.y + i, Color.clear);
+                setPixel(terrainPixels, CloneTerrain.width, impactPoint.x - j, impactPoint.y + i, Color.clear);
             }
         }
 
-        CloneTerrain.SetPixels(limLeft, limUp, limRight - limLeft + 1, limDown - limUp + 1, terrainPixels);
+        //CloneTerrain.SetPixels32(terrainPixels);
         CloneTerrain.Apply();
         UpdateTexture();
 
-        Destroy(GetComponent<PolygonCollider2D>());
-        if (!CheckIfNothing())
-            gameObject.AddComponent<PolygonCollider2D>();
+        Destroy(GetComponent<PolygonCollider2D>(),0);
+
+        if (!CheckIfNothing() && GetComponents<PolygonCollider2D>().Length < 2)
+            PolygonCollider2D = gameObject.AddComponent<PolygonCollider2D>();
     }
     
 }

@@ -95,9 +95,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54fd56e1bbb573b4c9fe28509a3121d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletShape: {fileID: 2800000, guid: a4cd14db3dd7fbb48babb764ef9e28a7, type: 3}
-  blastRadius: 5
-  speed: 0
+  WhatIsTerrain:
+    serializedVersion: 2
+    m_Bits: 256
+  WhatIsGunner:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!58 &2363513233673579394
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -113,7 +116,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.48
+  m_Radius: 0.21
 --- !u!50 &2363513233673579406
 Rigidbody2D:
   serializedVersion: 4

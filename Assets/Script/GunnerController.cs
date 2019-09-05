@@ -3,48 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GunnerController : NetworkBehaviour
+public class GunnerController : MonoBehaviour
 {
     public GameObject Bullet;
-    //public GameObject HealthBar;
+    public GameObject HealthBar;
 
     
-    [SerializeField,SyncVar]
+    [SerializeField]
     private int maxHealthPoint;
-    [SyncVar]
     private int healthPoint;
-    [SyncVar]
     private float healthRatio;
-    [SyncVar,SerializeField]
+    [SerializeField]
     private int damage;
 
-    [SyncVar]
     public float HorizontalSpeed;
-    [SyncVar]
     public float JumpForce;
-    [SyncVar]
     public float BulletSpeed;
-    [SyncVar]
     public float BulletRadius;
+    public LayerMask WhatIsTerrain;
     [HideInInspector]
-    [SyncVar]
     public bool IsGrounded;
 
     
     private Rigidbody2D PlayerRB2D;
     private CircleCollider2D CircleCollider2D;
 
-    public LayerMask WhatIsTerrain;
-
-    [SyncVar]
     private float InputHorizontal;
-    [SyncVar]
     private float NewHorizontalVelocity;
-    [SyncVar]
     private float InputVertical;
-    [SyncVar]
     private float NewVerticalVelocity;
-    [SyncVar]
     private bool FacingRight;
     public int Damage
     {
@@ -54,16 +41,15 @@ public class GunnerController : NetworkBehaviour
             damage = Mathf.Max(value, 0);
         }
     }
-    [HideInInspector]
     public int HealthPoint
     {
         get => healthPoint;
         set
         {
             healthPoint = Mathf.Min(Mathf.Max(value, 0), maxHealthPoint);
-            //HealthBar.transform.localScale = new Vector3((float)healthPoint / maxHealthPoint * healthRatio,
-            //                                             HealthBar.transform.localScale.y,
-            //                                             HealthBar.transform.localScale.z);
+            HealthBar.transform.localScale = new Vector3((float)healthPoint / maxHealthPoint * healthRatio,
+                                                         HealthBar.transform.localScale.y,
+                                                         HealthBar.transform.localScale.z);
         }
     }
     
@@ -74,21 +60,16 @@ public class GunnerController : NetworkBehaviour
         CircleCollider2D = GetComponent<CircleCollider2D>();
 
         IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
-        //healthRatio = HealthBar.transform.localScale.x;
+        healthRatio = HealthBar.transform.localScale.x;
         HealthPoint = maxHealthPoint;
     }
 
     void FixedUpdate()
     {
-        if (!isLocalPlayer)
-            return;
-
-        CmdProcessControl();
+        CmdProcessMoving();
     }
     void Update()
     {
-        if (!isLocalPlayer)
-            return;
         CmdProcessAction();
     }
     void Flip()
@@ -107,8 +88,7 @@ public class GunnerController : NetworkBehaviour
         bullet.Damage = Damage;
         bullet.Owner = gameObject;
     }
-    [Command]
-    void CmdProcessControl()
+    void CmdProcessMoving()
     {
         IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
         InputVertical = Input.GetAxis("Vertical");
@@ -122,9 +102,7 @@ public class GunnerController : NetworkBehaviour
             Flip();
 
         PlayerRB2D.velocity = new Vector2(NewHorizontalVelocity, NewVerticalVelocity);
-        print(PlayerRB2D.velocity);
     }
-    [Command]
     void CmdProcessAction()
     {
         if (Input.GetMouseButtonDown(0))

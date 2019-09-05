@@ -66,7 +66,7 @@
     <Compile Include="Assets\Script\CameraController.cs" />
     <Compile Include="Assets\Script\GunnerController.cs" />
     <Compile Include="Assets\Script\HealthScript.cs" />
-    <Compile Include="Assets\Script\NetworkManager.cs" />
+    <Compile Include="Assets\Script\NetworkScript.cs" />
     <Compile Include="Assets\Script\TerrainScript.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/Unity/WormLikeGame/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

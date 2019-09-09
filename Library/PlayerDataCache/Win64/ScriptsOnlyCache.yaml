@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - BulletScript
     - CameraController
     - GunnerController
+    - NetworkScript
     - TerrainScript
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
@@ -14,10 +15,6 @@ ScriptsOnlyBuild:
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
-    com.unity.multiplayer-hlapi.Editor.dll:
-    - UnityEditor.NetworkBehaviourInspector
-    - UnityEditor.NetworkIdentityEditor
-    - UnityEditor.NetworkTransformEditor
     com.unity.multiplayer-hlapi.Runtime.dll:
     - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
@@ -82,6 +79,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 10830}
     - Class: 114
       Script: {instanceID: 11266}
+    - Class: 114
+      Script: {instanceID: 11586}
     - Class: 114
       Script: {instanceID: 11824}
     - Class: 114
@@ -539,6 +538,12 @@ ScriptsOnlyBuild:
     className: BeforeAfterTestCommandState
   - hash:
       serializedVersion: 2
+      Hash: 1bdcd33c4e4582ca8fe225f7a64a29d6
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: NetworkScript
+  - hash:
+      serializedVersion: 2
       Hash: 1dcb82730d983b77cec736c6ef19f814
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
@@ -653,7 +658,7 @@ ScriptsOnlyBuild:
     className: SignalEmitter
   - hash:
       serializedVersion: 2
-      Hash: c8191151f793cd9b7efb966694a2d172
+      Hash: d908d9cd41a612658d22eaa2556ef5e0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GunnerController

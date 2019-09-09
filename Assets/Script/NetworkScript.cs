@@ -6,7 +6,10 @@ using UnityEngine.Networking;
 public class NetworkScript: MonoBehaviour
 {
     [SerializeField]
+    GameObject Gunner;
+
     RoleStatus Role;
+    bool IsGameStart;
     NetworkClient myClient;
 
     private void Awake()
@@ -16,22 +19,31 @@ public class NetworkScript: MonoBehaviour
     private void OnGUI()
     {
         if (GUILayout.Button("Host"))
+        {
             Role = RoleStatus.Host;
+            IsGameStart = true;
+        }
         else if (GUILayout.Button("Client"))
+        {
             Role = RoleStatus.Client;
+            IsGameStart = true;
+        }
     }
     void Update()
     {
-        if (Role == RoleStatus.Host)
+        if (!IsGameStart)
         {
-            SetupHost();
-            Role = RoleStatus.Unset;
+            if (Role == RoleStatus.Host)
+            {
+                SetupHost();
+            }
+            else if (Role == RoleStatus.Client)
+            {
+                SetupClient();
+            }
         }
-        else if(Role == RoleStatus.Client)
-        {
-            SetupClient();
-            Role = RoleStatus.Unset;
-        }
+        
+        
     }
 
     bool SetupHost()
@@ -44,6 +56,8 @@ public class NetworkScript: MonoBehaviour
         myClient = new NetworkClient();
         myClient.Connect("localhost", 0904);
         myClient.RegisterHandler(MsgType.Connect, OnClientConnected);
+
+        NetworkServer.Spawn(Gunner);
         
         Debug.Log(NetworkServer.connections.Count);
         return true;
@@ -62,14 +76,7 @@ public class NetworkScript: MonoBehaviour
     }
     void OnServerConnected(NetworkMessage netMsg)
     {
-        Debug.Log("Connected to: " + NetworkServer.connections.Count);
-        foreach (var i in NetworkServer.connections)
-        {
-            if (i == null)
-                Debug.Log("#");
-            else
-                Debug.Log(i.address);
-        }
+        Debug.Log("Connected to: " + (NetworkServer.connections.Count - 1));
     }
     enum RoleStatus
     {

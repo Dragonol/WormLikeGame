@@ -70,7 +70,7 @@ public class BulletScript : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collider2d.IsTouchingLayers(WhatIsTerrain) || 
-            collider2d.IsTouchingLayers(WhatIsGunner) && collision.tag != "ControlPlayer")
+            collider2d.IsTouchingLayers(WhatIsGunner) && collision.gameObject != Owner)
         {
             Explose();
             Destroy(gameObject);
@@ -82,22 +82,22 @@ public class BulletScript : MonoBehaviour
         Collider2D[] hitTerrains = Physics2D.OverlapCircleAll(transform.position, BlastRadius, WhatIsTerrain);
         Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(transform.position, BlastRadius, WhatIsGunner);
 
-        List<Collider2D> listHitPlayer = new List<Collider2D>(hitPlayers);
-        foreach(Collider2D hitPlayer in listHitPlayer)
-        {
-            if (hitPlayer == Owner.GetComponent<Collider2D>())
-            {
-                listHitPlayer.Remove(hitPlayer);
-                break;
-            }
-        }
-        hitPlayers = listHitPlayer.ToArray();
+        List<Collider2D> listHitPlayer = new List<Collider2D>();
+        List<Collider2D> listHitTerrain = new List<Collider2D>(hitTerrains);
 
-        foreach(Collider2D hitTerrain in hitTerrains)
+        List<Collider2D> tempListHitPlayer = new List<Collider2D>(hitPlayers);
+        foreach(Collider2D hitPlayer in tempListHitPlayer)
+        {
+            if (hitPlayer.gameObject == Owner)
+                continue;
+            listHitPlayer.Add(hitPlayer);
+        }
+
+        foreach (Collider2D hitTerrain in listHitTerrain)
         {
             hitTerrain.GetComponent<TerrainScript>().MakeAHole(BlastRadius, transform.position);
         }
-        foreach (Collider2D hitPlayer in hitPlayers)
+        foreach (Collider2D hitPlayer in listHitPlayer)
         {
             hitPlayer.GetComponent<GunnerController>().HealthPoint -= Damage;
             //print(hitPlayer.name);

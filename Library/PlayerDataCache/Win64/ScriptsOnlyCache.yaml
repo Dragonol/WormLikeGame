@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - BulletScript
     - CameraController
     - GunnerController
+    - HealthScript
     - NetworkScript
     - TerrainScript
     Unity.2D.Tilemap.Editor.dll:
@@ -81,6 +82,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11266}
     - Class: 114
       Script: {instanceID: 11586}
+    - Class: 114
+      Script: {instanceID: 11674}
     - Class: 114
       Script: {instanceID: 11824}
     - Class: 114
@@ -568,7 +571,7 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
-      Hash: 06bea8453ac74b087a2e24aa87a63331
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: HealthScript

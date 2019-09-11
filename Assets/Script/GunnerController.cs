@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 public class GunnerController : NetworkBehaviour
 {
     public GameObject Bullet;
-    //public GameObject HealthBar;
 
     public bool isLocal;
 
@@ -14,6 +13,7 @@ public class GunnerController : NetworkBehaviour
     private int maxHealthPoint;
     private int healthPoint;
     private float healthRatio;
+    private HealthScript healthScript;
     [SerializeField]
     private int damage;
 
@@ -31,7 +31,6 @@ public class GunnerController : NetworkBehaviour
 
     private float InputHorizontal;
     private float InputVertical;
-    [SyncVar]
     private bool FacingRight;
     public int Damage
     {
@@ -47,9 +46,7 @@ public class GunnerController : NetworkBehaviour
         set
         {
             healthPoint = Mathf.Min(Mathf.Max(value, 0), maxHealthPoint);
-            //HealthBar.transform.localScale = new Vector3((float)healthPoint / maxHealthPoint * healthRatio,
-            //                                             HealthBar.transform.localScale.y,
-            //                                             HealthBar.transform.localScale.z);
+            healthScript.FillRate = (float)healthPoint / maxHealthPoint;
         }
     }
 
@@ -58,12 +55,11 @@ public class GunnerController : NetworkBehaviour
     {
         PlayerRB2D = GetComponent<Rigidbody2D>();
         CircleCollider2D = GetComponent<CircleCollider2D>();
+        healthScript = transform.GetChild(0).GetComponent<HealthScript>();
 
         IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
-        //healthRatio = HealthBar.transform.localScale.x;
         HealthPoint = maxHealthPoint;
         isLocal = isLocalPlayer;
-        print(isLocalPlayer);
     }
 
     void FixedUpdate()
@@ -74,8 +70,10 @@ public class GunnerController : NetworkBehaviour
         IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
         InputVertical = Input.GetAxis("Vertical");
         InputHorizontal = Input.GetAxis("Horizontal");
+        float newHorizontalVelocity = InputHorizontal * HorizontalSpeed;
+        float newVerticalVelocity = (IsGrounded && InputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
+        PlayerRB2D.velocity = new Vector2(newHorizontalVelocity, newVerticalVelocity);
 
-        CmdMovement(InputHorizontal, InputVertical, IsGrounded);
     }
     void Update()
     {
@@ -90,9 +88,9 @@ public class GunnerController : NetworkBehaviour
         }
     }
     [Command]
-    void CmdMovement(float inputHorizontal, float inputVertical, bool isGrounded)
+    void CmdMovement(Vector2 position)
     {
-        RpcMove(inputHorizontal, inputVertical, isGrounded);
+        RpcMove(position);
     }
     [Command]
     void CmdShoot(Vector3 mousePosition, Vector2 direction)
@@ -107,11 +105,9 @@ public class GunnerController : NetworkBehaviour
         transform.localScale = scaler;
     }
     [ClientRpc]
-    void RpcMove(float inputHorizontal, float inputVertical, bool isGrounded)
+    void RpcMove(Vector2 position)
     {
-        float newHorizontalVelocity = inputHorizontal * HorizontalSpeed;
-        float newVerticalVelocity = (isGrounded && inputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
-        PlayerRB2D.velocity = new Vector2(newHorizontalVelocity, newVerticalVelocity);
+        transform.position = position;
 
         if (InputHorizontal < 0 && FacingRight)
             Flip();

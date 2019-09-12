@@ -7,8 +7,6 @@ public class GunnerController : NetworkBehaviour
 {
     public GameObject Bullet;
 
-    public bool isLocal;
-
     [SerializeField]
     private int maxHealthPoint;
     private int healthPoint;
@@ -59,7 +57,9 @@ public class GunnerController : NetworkBehaviour
 
         IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
         HealthPoint = maxHealthPoint;
-        isLocal = isLocalPlayer;
+
+        if (isLocalPlayer)
+            Camera.main.GetComponent<CameraController>().TrackingObject = gameObject;
     }
 
     void FixedUpdate()

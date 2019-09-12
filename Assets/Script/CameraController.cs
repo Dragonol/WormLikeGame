@@ -12,12 +12,15 @@ public class CameraController : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (TrackingObject == null)
+            return;
+
         TrackingObjectPosition = TrackingObject.transform.position;
         transform.position = new Vector3(TrackingObjectPosition.x,
                                          TrackingObjectPosition.y,
                                          -100);
+
     }
 }

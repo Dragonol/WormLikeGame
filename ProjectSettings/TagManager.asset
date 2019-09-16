@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Terrain
   - ControlPlayer
+  - BedRock
+  - DeadBlock
   layers:
   - Default
   - TransparentFX

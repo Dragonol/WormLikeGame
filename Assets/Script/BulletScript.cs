@@ -69,8 +69,12 @@ public class BulletScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject == Owner)
+            return;
+
         if(collider2d.IsTouchingLayers(WhatIsTerrain) || 
-            collider2d.IsTouchingLayers(WhatIsGunner) && collision.gameObject != Owner)
+           collider2d.IsTouchingLayers(WhatIsGunner) ||
+           collision.tag == "BedRock")
         {
             Explose();
             Destroy(gameObject);

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7283984302100687950}
   - component: {fileID: 7283984302100687945}
   - component: {fileID: 5328658548527083414}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GrassHillLeft2
   m_TagString: Terrain
   m_Icon: {fileID: 0}
@@ -57,6 +57,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

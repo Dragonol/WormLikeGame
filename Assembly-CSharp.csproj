@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="Assets\Script\BulletScript.cs" />
     <Compile Include="Assets\Script\CameraController.cs" />
+    <Compile Include="Assets\Script\DeadBlockScript.cs" />
+    <Compile Include="Assets\Script\GameManager.cs" />
     <Compile Include="Assets\Script\GunnerController.cs" />
     <Compile Include="Assets\Script\HealthScript.cs" />
     <Compile Include="Assets\Script\NetworkScript.cs" />

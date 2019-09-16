@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class GunnerController : NetworkBehaviour
 {
     public GameObject Bullet;
+    public GameObject GameManager;
 
     [SerializeField]
     private int maxHealthPoint;
@@ -20,12 +21,14 @@ public class GunnerController : NetworkBehaviour
     public float BulletSpeed;
     public float BulletRadius;
     public LayerMask WhatIsTerrain;
-    [HideInInspector]
+    
     public bool IsGrounded;
+    public bool IsSided;
 
 
     private Rigidbody2D PlayerRB2D;
-    private CircleCollider2D CircleCollider2D;
+    private Collider2D Collider2D;
+    private Collider2D SideCollider2D;
 
     private float InputHorizontal;
     private float InputVertical;
@@ -45,17 +48,26 @@ public class GunnerController : NetworkBehaviour
         {
             healthPoint = Mathf.Min(Mathf.Max(value, 0), maxHealthPoint);
             healthScript.FillRate = (float)healthPoint / maxHealthPoint;
+            if(isLocalPlayer && healthPoint==0)
+            {
+                GameManager.GetComponent<GameManager>().Endgame(gameObject);
+            }
         }
     }
 
+    private void Awake()
+    {
+        GameManager = GameObject.Find("GameManager");
+    }
 
     void Start()
     {
         PlayerRB2D = GetComponent<Rigidbody2D>();
-        CircleCollider2D = GetComponent<CircleCollider2D>();
+        Collider2D = GetComponent<EdgeCollider2D>();
+        SideCollider2D = GetComponent<CircleCollider2D>();
         healthScript = transform.GetChild(0).GetComponent<HealthScript>();
 
-        IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
+        IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
         HealthPoint = maxHealthPoint;
 
         if (isLocalPlayer)
@@ -67,11 +79,12 @@ public class GunnerController : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        IsGrounded = CircleCollider2D.IsTouchingLayers(WhatIsTerrain);
+        IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
+        IsSided = SideCollider2D.IsTouchingLayers(WhatIsTerrain);
         InputVertical = Input.GetAxis("Vertical");
         InputHorizontal = Input.GetAxis("Horizontal");
         float newHorizontalVelocity = InputHorizontal * HorizontalSpeed;
-        float newVerticalVelocity = (IsGrounded && InputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
+        float newVerticalVelocity = (IsGrounded /*&& !IsSided*/ && InputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
         PlayerRB2D.velocity = new Vector2(newHorizontalVelocity, newVerticalVelocity);
 
     }
@@ -87,11 +100,7 @@ public class GunnerController : NetworkBehaviour
             CmdShoot(mousePosition, direction);
         }
     }
-    [Command]
-    void CmdMovement(Vector2 position)
-    {
-        RpcMove(position);
-    }
+    
     [Command]
     void CmdShoot(Vector3 mousePosition, Vector2 direction)
     {
@@ -104,17 +113,7 @@ public class GunnerController : NetworkBehaviour
         scaler.x *= -1;
         transform.localScale = scaler;
     }
-    [ClientRpc]
-    void RpcMove(Vector2 position)
-    {
-        transform.position = position;
-
-        if (InputHorizontal < 0 && FacingRight)
-            Flip();
-        else if (InputHorizontal > 0 && !FacingRight)
-            Flip();
-
-    }
+    
     [ClientRpc]
     private void RpcShoot(Vector2 origin, Vector2 direction, float blastRadius, float speed)
     {

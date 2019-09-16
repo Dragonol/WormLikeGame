@@ -64,8 +64,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 65
       Script: {instanceID: 0}
-    - Class: 68
-      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 104
@@ -103,27 +101,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10652}
     - Class: 114
-      Script: {instanceID: 10784}
+      Script: {instanceID: 10666}
     - Class: 114
-      Script: {instanceID: 10864}
+      Script: {instanceID: 10786}
     - Class: 114
-      Script: {instanceID: 11052}
+      Script: {instanceID: 10866}
     - Class: 114
-      Script: {instanceID: 11310}
+      Script: {instanceID: 11054}
     - Class: 114
-      Script: {instanceID: 11492}
+      Script: {instanceID: 11312}
     - Class: 114
-      Script: {instanceID: 11640}
+      Script: {instanceID: 11494}
     - Class: 114
-      Script: {instanceID: 11728}
+      Script: {instanceID: 11642}
     - Class: 114
-      Script: {instanceID: 11878}
+      Script: {instanceID: 11730}
     - Class: 114
-      Script: {instanceID: 11948}
+      Script: {instanceID: 11880}
     - Class: 114
-      Script: {instanceID: 11972}
+      Script: {instanceID: 11950}
     - Class: 114
-      Script: {instanceID: 21324}
+      Script: {instanceID: 11974}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -445,6 +443,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraController
+  - hash:
+      serializedVersion: 2
+      Hash: 8843261f03731297689582d62c7aec2d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameManager
   - hash:
       serializedVersion: 2
       Hash: b3ab2106268377ffe25dd18ac23dca28
@@ -805,13 +809,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 8843261f03731297689582d62c7aec2d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: GameManager
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: D:/Unity/WormLikeGame/Test/WormLikeGame.exe
+  playerPath: C:/Users/huyhn/OneDrive/Desktop/WormLikeGame.exe

@@ -28,7 +28,6 @@ public class GunnerController : NetworkBehaviour
 
     private Rigidbody2D PlayerRB2D;
     private Collider2D Collider2D;
-    private Collider2D SideCollider2D;
 
     private float InputHorizontal;
     private float InputVertical;
@@ -63,8 +62,7 @@ public class GunnerController : NetworkBehaviour
     void Start()
     {
         PlayerRB2D = GetComponent<Rigidbody2D>();
-        Collider2D = GetComponent<EdgeCollider2D>();
-        SideCollider2D = GetComponent<CircleCollider2D>();
+        Collider2D = GetComponents<Collider2D>()[1];
         healthScript = transform.GetChild(0).GetComponent<HealthScript>();
 
         IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
@@ -80,7 +78,6 @@ public class GunnerController : NetworkBehaviour
             return;
 
         IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
-        IsSided = SideCollider2D.IsTouchingLayers(WhatIsTerrain);
         InputVertical = Input.GetAxis("Vertical");
         InputHorizontal = Input.GetAxis("Horizontal");
         float newHorizontalVelocity = InputHorizontal * HorizontalSpeed;

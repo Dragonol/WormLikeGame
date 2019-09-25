@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public Canvas DisplayResult;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        DisplayResult = GameObject.FindWithTag("Result").GetComponent<Canvas>();
         DisplayResult.enabled = false;
+
     }
     void Start()
     {
@@ -20,9 +24,12 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void Endgame(GameObject gameObject)
+    public void GameOver()
     {
         DisplayResult.enabled = true;
-        Destroy(gameObject);
+        if(NetworkServer.connections.Count == 1)
+        {
+            DisplayResult.GetComponentInChildren<Text>().text = "You Win!";
+        }
     }
 }

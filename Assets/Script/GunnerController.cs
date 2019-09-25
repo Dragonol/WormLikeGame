@@ -23,11 +23,9 @@ public class GunnerController : NetworkBehaviour
     public LayerMask WhatIsTerrain;
     
     public bool IsGrounded;
-    public bool IsSided;
-
 
     private Rigidbody2D PlayerRB2D;
-    private Collider2D Collider2D;
+    private Collider2D Collider;
 
     private float InputHorizontal;
     private float InputVertical;
@@ -47,25 +45,26 @@ public class GunnerController : NetworkBehaviour
         {
             healthPoint = Mathf.Min(Mathf.Max(value, 0), maxHealthPoint);
             healthScript.FillRate = (float)healthPoint / maxHealthPoint;
-            if(isLocalPlayer && healthPoint==0)
+            if (isLocalPlayer && healthPoint == 0) 
             {
-                GameManager.GetComponent<GameManager>().Endgame(gameObject);
+                GameManager.GetComponent<GameManager>().GameOver();
+                Destroy(gameObject);
             }
         }
     }
 
     private void Awake()
     {
-        GameManager = GameObject.Find("GameManager");
+        GameManager = GameObject.Find("NetworkManager");
     }
 
     void Start()
     {
         PlayerRB2D = GetComponent<Rigidbody2D>();
-        Collider2D = GetComponents<Collider2D>()[1];
+        Collider = GetComponent<Collider2D>();
         healthScript = transform.GetChild(0).GetComponent<HealthScript>();
 
-        IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
+        
         HealthPoint = maxHealthPoint;
 
         if (isLocalPlayer)
@@ -77,11 +76,11 @@ public class GunnerController : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        IsGrounded = Collider2D.IsTouchingLayers(WhatIsTerrain);
+        GroundCheck();
         InputVertical = Input.GetAxis("Vertical");
         InputHorizontal = Input.GetAxis("Horizontal");
         float newHorizontalVelocity = InputHorizontal * HorizontalSpeed;
-        float newVerticalVelocity = (IsGrounded /*&& !IsSided*/ && InputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
+        float newVerticalVelocity = (IsGrounded && InputVertical > 0) ? JumpForce : PlayerRB2D.velocity.y;
         PlayerRB2D.velocity = new Vector2(newHorizontalVelocity, newVerticalVelocity);
 
     }
@@ -123,5 +122,10 @@ public class GunnerController : NetworkBehaviour
         bulletScript.Damage = Damage;
         bulletScript.Owner = gameObject;
     }
-
+    void GroundCheck()
+    {
+        bool isRayHit = Physics2D.Raycast(transform.position, Vector2.down, 1, WhatIsTerrain);
+        bool isTouchTerrain = Collider.IsTouchingLayers(WhatIsTerrain);
+        IsGrounded = isRayHit && isTouchTerrain;
+    }
 }

@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2774823245752598611}
   - component: {fileID: 7061702820675290856}
   - component: {fileID: -2065021207129865469}
-  - component: {fileID: 1893473634306805569}
   - component: {fileID: 1120828238808927174}
   m_Layer: 9
   m_Name: Gunner
@@ -106,12 +105,11 @@ MonoBehaviour:
   HorizontalSpeed: 12
   JumpForce: 25
   BulletSpeed: 35
-  BulletRadius: 0.5
+  BulletRadius: 0.8
   WhatIsTerrain:
     serializedVersion: 2
     m_Bits: 256
   IsGrounded: 0
-  IsSided: 0
 --- !u!50 &2774823245752598611
 Rigidbody2D:
   serializedVersion: 4
@@ -188,22 +186,6 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
---- !u!58 &1893473634306805569
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3933671630508916060}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: c7d744d1835b8624384b0ae1c5a0905d, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.03}
-  serializedVersion: 2
-  m_Radius: 0.65
 --- !u!58 &1120828238808927174
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -217,9 +199,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.04}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.64
 --- !u!1001 &6304959562080181322
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -227,6 +209,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1297558322743029628}
     m_Modifications:
+    - target: {fileID: 4721174321227498541, guid: 271a71ad381c6a34fafe5023480cc34c,
+        type: 3}
+      propertyPath: m_Name
+      value: HealthDisplay
+      objectReference: {fileID: 0}
     - target: {fileID: 4721174321227498540, guid: 271a71ad381c6a34fafe5023480cc34c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -281,11 +268,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4721174321227498541, guid: 271a71ad381c6a34fafe5023480cc34c,
-        type: 3}
-      propertyPath: m_Name
-      value: HealthDisplay
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 271a71ad381c6a34fafe5023480cc34c, type: 3}

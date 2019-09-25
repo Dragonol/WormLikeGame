@@ -8,6 +8,7 @@ TagManager:
   - ControlPlayer
   - BedRock
   - DeadBlock
+  - Result
   layers:
   - Default
   - TransparentFX

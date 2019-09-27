@@ -7,7 +7,6 @@ ScriptsOnlyBuild:
     - GameManager
     - GunnerController
     - HealthScript
-    - NetworkScript
     - TerrainScript
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
@@ -30,12 +29,62 @@ ScriptsOnlyBuild:
     com.unity.multiplayer-hlapi.Runtime.dll:
     - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
-    - UnityEngine.Networking.NetworkManager
+    - UnityEngine.Networking.NetworkLobbyManager
+    - UnityEngine.Networking.NetworkLobbyPlayer
     - UnityEngine.Networking.NetworkManagerHUD
     - UnityEngine.Networking.NetworkStartPosition
     - UnityEngine.Networking.NetworkTransform
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/LobbyScene.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 50
+      Script: {instanceID: 0}
+    - Class: 58
+      Script: {instanceID: 0}
+    - Class: 62
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9808}
+    - Class: 114
+      Script: {instanceID: 9902}
+    - Class: 114
+      Script: {instanceID: 9948}
+    - Class: 114
+      Script: {instanceID: 9988}
+    - Class: 114
+      Script: {instanceID: 10590}
+    - Class: 114
+      Script: {instanceID: 10652}
+    - Class: 114
+      Script: {instanceID: 11730}
+    - Class: 114
+      Script: {instanceID: 11880}
+    - Class: 114
+      Script: {instanceID: 11974}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    Assets/Scenes/PlayScene.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -73,6 +122,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9732}
     - Class: 114
+      Script: {instanceID: 9808}
+    - Class: 114
       Script: {instanceID: 9828}
     - Class: 114
       Script: {instanceID: 9830}
@@ -99,11 +150,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10452}
     - Class: 114
+      Script: {instanceID: 10590}
+    - Class: 114
       Script: {instanceID: 10652}
     - Class: 114
       Script: {instanceID: 10666}
-    - Class: 114
-      Script: {instanceID: 10786}
     - Class: 114
       Script: {instanceID: 10866}
     - Class: 114
@@ -112,8 +163,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11312}
     - Class: 114
       Script: {instanceID: 11494}
-    - Class: 114
-      Script: {instanceID: 11642}
     - Class: 114
       Script: {instanceID: 11730}
     - Class: 114
@@ -787,7 +836,7 @@ ScriptsOnlyBuild:
     className: SignalEmitter
   - hash:
       serializedVersion: 2
-      Hash: e9d4a4d76fcf24b079acf476ee0b4684
+      Hash: 95e9aec5931e37fbdd036b9f25cbedd5
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GunnerController
@@ -811,5 +860,6 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   platform: 19
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Users/huyhn/OneDrive/Desktop/WormLikeGame.exe
+  - Assets/Scenes/PlayScene.unity
+  - Assets/Scenes/LobbyScene.unity
+  playerPath: D:/Unity/WormLikeGame/Test/WormLikeGame.exe

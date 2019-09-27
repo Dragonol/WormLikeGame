@@ -124,8 +124,9 @@ public class GunnerController : NetworkBehaviour
     }
     void GroundCheck()
     {
-        bool isRayHit = Physics2D.Raycast(transform.position, Vector2.down, 1, WhatIsTerrain);
+        bool isRayHit1 = Physics2D.Raycast(transform.position - new Vector3(Collider.bounds.size.x / 3, 0, 0), Vector2.down, 1, WhatIsTerrain);
+        bool isRayHit2 = Physics2D.Raycast(transform.position + new Vector3(Collider.bounds.size.x / 3, 0, 0), Vector2.down, 1, WhatIsTerrain);
         bool isTouchTerrain = Collider.IsTouchingLayers(WhatIsTerrain);
-        IsGrounded = isRayHit && isTouchTerrain;
+        IsGrounded = (isRayHit1 || isRayHit2) && isTouchTerrain;
     }
 }
